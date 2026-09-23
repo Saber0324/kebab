@@ -38,7 +38,7 @@ pub async fn eval(
     let result = submit_code(client, language, code.get_code(), code.get_stdin()).await?;
 
     let mut response = format!(
-        "Your eval has returned with code: {}\n\n```ansi\n{}\n```",
+        "Your eval has returned with code: {}\n\n```\n{}\n```",
         result.code.unwrap_or(1),
         result.stdout.unwrap_or_else(|| String::from("No output"))
     );
@@ -46,7 +46,7 @@ pub async fn eval(
     if let Some(stderr) = result.stderr
         && !stderr.is_empty()
     {
-        response.push_str(format!("\nstderr: ```ansi\n{stderr}\n```").as_str());
+        response.push_str(format!("\nstderr: ```\n{stderr}\n```").as_str());
     }
 
     ctx.say(response).await?;
