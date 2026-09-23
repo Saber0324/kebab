@@ -45,7 +45,7 @@ pub async fn eval(
     if let Some(stdout) = result.stdout
         && !stdout.is_empty()
     {
-        response.push_str("```\n{}\n```");
+        response.push_str(format!("```\n{stdout}\n```").as_str());
     } else {
         response.push_str("```\nNo output\n```");
     }
