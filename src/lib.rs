@@ -39,14 +39,14 @@ pub async fn eval(
 
     let mut response = format!(
         "Your eval has returned with code: {}\n\n```ansi\n{}\n```",
-        result.code,
+        result.code.unwrap_or(1),
         result.stdout.unwrap_or_else(|| String::from("No output"))
     );
 
     if let Some(stderr) = result.stderr
         && !stderr.is_empty()
     {
-        response.push_str(format!("\nstderr: {stderr}").as_str());
+        response.push_str(format!("\nstderr: ```ansi\n{stderr}\n```").as_str());
     }
 
     ctx.say(response).await?;

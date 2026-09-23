@@ -71,6 +71,7 @@ pub enum Language {
     Java,
     Lua,
     JavaScript,
+    Zig,
 }
 
 impl Language {
@@ -86,6 +87,7 @@ impl Language {
             Self::Java => "java",
             Self::Lua => "lua",
             Self::JavaScript => "javascript",
+            Self::Zig => "zig",
         };
         name.to_string()
     }
@@ -107,6 +109,7 @@ impl FromStr for Language {
             "java" => Ok(Self::Java),
             "lua" => Ok(Self::Lua),
             "js" | "javascript" => Ok(Self::JavaScript),
+            "zig" => Ok(Self::Zig),
             unsuported => Err(EvalError::UnsupportedLanguage(unsuported.to_string())),
         }
     }

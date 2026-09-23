@@ -29,7 +29,7 @@ pub struct ExecutionResult {
 pub struct RunResult {
     pub stdout: Option<String>,
     pub stderr: Option<String>,
-    pub code: u8,
+    pub code: Option<u8>,
 }
 
 #[derive(Error, Debug)]
