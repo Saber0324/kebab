@@ -38,10 +38,17 @@ pub async fn eval(
     let result = submit_code(client, language, code.get_code(), code.get_stdin()).await?;
 
     let mut response = format!(
-        "Your eval has returned with code: {}\n\n```\n{}\n```",
+        "Your eval has returned with code: {}\n\n",
         result.code.unwrap_or(1),
-        result.stdout.unwrap_or_else(|| String::from("No output"))
     );
+
+    if let Some(stdout) = result.stdout
+        && !stdout.is_empty()
+    {
+        response.push_str("```\n{}\n```");
+    } else {
+        response.push_str("```\nNo output\n```");
+    }
 
     if let Some(stderr) = result.stderr
         && !stderr.is_empty()
