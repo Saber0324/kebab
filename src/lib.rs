@@ -22,8 +22,8 @@ pub async fn hello(
     Ok(())
 }
 
-#[poise::command(prefix_command)]
-pub async fn eval(
+#[poise::command(prefix_command, track_edits, aliases("e", "eval"))]
+pub async fn evaluate(
     ctx: Context<'_>,
     #[description = "Code to be executed"]
     #[rest]

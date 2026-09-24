@@ -1,17 +1,26 @@
 use dotenv::dotenv;
-use poise::serenity_prelude as serenity;
+use poise::{
+    EditTracker,
+    serenity_prelude::{self as serenity},
+};
+use std::time::Duration;
 
-use hux_rs::{Data, Error, eval, hello};
+use hux_rs::{Data, Error, evaluate, hello};
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
-    let token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
-    let intents = serenity::GatewayIntents::non_privileged();
+    let edit_tracker = Some(std::sync::Arc::from(EditTracker::for_timespan(
+        Duration::from_mins(30),
+    )));
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![hello(), eval()],
+            commands: vec![hello(), evaluate()],
+            prefix_options: poise::PrefixFrameworkOptions {
+                prefix: Some("!".into()),
+                edit_tracker,
+                ..Default::default()
+            },
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
@@ -21,6 +30,13 @@ async fn main() {
             })
         })
         .build();
+
+    dotenv().ok();
+    let token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
+    let intents = serenity::GatewayIntents::non_privileged()
+        | serenity::GatewayIntents::GUILD_MESSAGE_REACTIONS
+        | serenity::GatewayIntents::DIRECT_MESSAGE_REACTIONS
+        | serenity::GatewayIntents::MESSAGE_CONTENT;
 
     let client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
