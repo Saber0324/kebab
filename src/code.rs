@@ -105,7 +105,7 @@ impl FromStr for Language {
             "brainfuck" | "bf" => Ok(Self::Brainfuck),
             "c" => Ok(Self::C),
             "cpp" => Ok(Self::Cpp),
-            "bash" => Ok(Self::Bash),
+            "bash" | "sh" => Ok(Self::Bash),
             "java" => Ok(Self::Java),
             "lua" => Ok(Self::Lua),
             "js" | "javascript" => Ok(Self::JavaScript),
