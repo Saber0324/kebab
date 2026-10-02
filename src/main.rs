@@ -1,11 +1,11 @@
 use dotenv::dotenv;
 use poise::{
     EditTracker,
-    serenity_prelude::{self as serenity},
+    serenity_prelude::{self as serenity, builder::CreateAllowedMentions},
 };
 use std::time::Duration;
 
-use hux_rs::{Data, Error, evaluate, hello};
+use hux_rs::{Data, evaluate, help};
 
 #[tokio::main]
 async fn main() {
@@ -13,14 +13,20 @@ async fn main() {
         Duration::from_mins(30),
     )));
 
+    let allowed_mentions = CreateAllowedMentions::new()
+        .everyone(false)
+        .all_roles(false)
+        .all_users(false);
+
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![hello(), evaluate()],
+            commands: vec![evaluate(), help()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 edit_tracker,
                 ..Default::default()
             },
+            allowed_mentions: Some(allowed_mentions),
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
@@ -46,19 +52,4 @@ async fn main() {
         .start()
         .await
         .expect("Failed to start client");
-}
-
-#[expect(dead_code)]
-async fn on_error(error: poise::FrameworkError<'_, Data, Error>) {
-    match error {
-        poise::FrameworkError::Setup { error, .. } => panic!("Failed to start bot: {error:?}"),
-        poise::FrameworkError::Command { error, ctx, .. } => {
-            println!("Error in command `{}`: {:?}", ctx.command().name, error);
-        }
-        error => {
-            if let Err(e) = poise::builtins::on_error(error).await {
-                println!("Error while handling error: {e}");
-            }
-        }
-    }
 }
