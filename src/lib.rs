@@ -69,7 +69,8 @@ pub async fn evaluate(
     Ok(())
 }
 
-#[poise::command(slash_command, prefix_command, track_edits)]
+/// Shows the help menu
+#[poise::command(slash_command, prefix_command, track_edits, hide_in_help)]
 pub async fn help(
     ctx: Context<'_>,
     #[description = "Command to be searched"] command: Option<String>,
@@ -99,6 +100,9 @@ pub async fn help(
         let mut uncat_category = "Uncategorized:\n".to_string();
 
         for cmd in commands {
+            if cmd.hide_in_help {
+                continue;
+            }
             let category = cmd.category.as_deref().unwrap_or("Uncategorized");
             if category == "Utility" {
                 util_category.push_str(format!("+ {}\n", cmd.name).as_str());
