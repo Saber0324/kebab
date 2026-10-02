@@ -5,7 +5,7 @@ use poise::{
 };
 use std::time::Duration;
 
-use hux_rs::{Data, Error, evaluate, hello};
+use hux_rs::{Data, evaluate, hello};
 
 #[tokio::main]
 async fn main() {
