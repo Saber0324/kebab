@@ -111,7 +111,9 @@ pub async fn help(
             }
         }
         response.push_str(format!("{util_category}\n").as_str());
-        response.push_str(&uncat_category);
+        if uncat_category != "Uncategorized:\n" {
+            response.push_str(&uncat_category);
+        }
 
         response.push_str("```");
         ctx.reply(response).await?;
