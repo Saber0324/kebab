@@ -57,7 +57,35 @@ pub async fn evaluate(
         response.push_str("```\nNo output\n```");
     }
 
-    ctx.say(response).await?;
+    ctx.reply(response).await?;
 
+    Ok(())
+}
+
+#[poise::command(slash_command, prefix_command, track_edits)]
+pub async fn help(
+    ctx: Context<'_>,
+    #[description = "Command to be searched"] command: Option<String>,
+) -> Result<(), Error> {
+    let commands = &ctx.framework().options().commands;
+
+    if let Some(cmd_searched) = command {
+        if let Some(cmd_found) = commands
+            .iter()
+            .find(|c| c.name.eq_ignore_ascii_case(&cmd_searched))
+        {
+            let desc = cmd_found.description.as_deref().unwrap_or("No description");
+            let response = format!("**{}**\n{desc}", cmd_found.name);
+            ctx.reply(response).await?;
+        } else {
+            ctx.reply("Command not found").await?;
+        }
+    } else {
+        let mut response = "Available commands:\n".to_string();
+        for cmd in commands {
+            response.push_str(format!("{}\n", cmd.name).as_str());
+        }
+        ctx.reply(response).await?;
+    }
     Ok(())
 }
