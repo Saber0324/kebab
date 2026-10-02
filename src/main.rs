@@ -5,7 +5,7 @@ use poise::{
 };
 use std::time::Duration;
 
-use hux_rs::{Data, evaluate, hello};
+use hux_rs::{Data, evaluate};
 
 #[tokio::main]
 async fn main() {
@@ -20,7 +20,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![hello(), evaluate()],
+            commands: vec![evaluate()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 edit_tracker,
