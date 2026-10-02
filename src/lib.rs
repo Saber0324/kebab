@@ -2,7 +2,6 @@ use crate::{
     code::{Code, EvalError},
     piston::submit_code,
 };
-use poise::serenity_prelude as serenity;
 
 mod code;
 mod piston;
@@ -11,18 +10,16 @@ pub struct Data {}
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
 
-#[poise::command(slash_command, prefix_command)]
-pub async fn hello(
-    ctx: Context<'_>,
-    #[description = "User to greet"] user: Option<serenity::User>,
-) -> Result<(), Error> {
-    let user = user.as_ref().unwrap_or_else(|| ctx.author());
-    let response = format!("Hello! {}", user.name);
-    ctx.say(response).await?;
-    Ok(())
-}
-
-#[poise::command(prefix_command, track_edits, aliases("e", "eval"))]
+/// Evaluate code
+///
+/// Takes a codeblock annotated with the language to evaluate, \
+/// and an optional second codeblock for stdin.
+#[poise::command(
+    prefix_command,
+    track_edits,
+    category = "evaluation",
+    aliases("e", "eval")
+)]
 pub async fn evaluate(
     ctx: Context<'_>,
     #[description = "Code to be executed"]
