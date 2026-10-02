@@ -17,7 +17,7 @@ pub type Context<'a> = poise::Context<'a, Data, Error>;
 ///
 /// # Examples:
 /// !e \`\`\`py
-/// print(input("Say your name"))
+/// print(input("Say your name: "))
 /// \`\`\`\
 ///
 /// \`\`\`Kebab\`\`\`
