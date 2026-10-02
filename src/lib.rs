@@ -42,18 +42,17 @@ pub async fn evaluate(
         result.code.unwrap_or(1),
     );
 
+    if let Some(stderr) = result.stderr
+        && !stderr.is_empty()
+    {
+        response.push_str(format!("stderr: ```\n{stderr}\n```\n").as_str());
+    }
     if let Some(stdout) = result.stdout
-        && !stdout.is_empty()
+        && !stdout.trim().is_empty()
     {
         response.push_str(format!("```\n{stdout}\n```").as_str());
     } else {
         response.push_str("```\nNo output\n```");
-    }
-
-    if let Some(stderr) = result.stderr
-        && !stderr.is_empty()
-    {
-        response.push_str(format!("\nstderr: ```\n{stderr}\n```").as_str());
     }
 
     ctx.say(response).await?;
