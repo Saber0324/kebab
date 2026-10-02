@@ -10,14 +10,21 @@ pub struct Data {}
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
 
-/// Evaluate code
+/// Evaluates code
 ///
 /// Takes a codeblock annotated with the language to evaluate, \
 /// and an optional second codeblock for stdin.
+///
+/// Example:
+/// !e \`\`\`py
+/// print(input("Say your name"))
+/// \`\`\`\
+///
+/// \`\`\`Kebab\`\`\`
 #[poise::command(
     prefix_command,
     track_edits,
-    category = "evaluation",
+    category = "Utility",
     aliases("e", "eval")
 )]
 pub async fn evaluate(
@@ -75,16 +82,34 @@ pub async fn help(
             .find(|c| c.name.eq_ignore_ascii_case(&cmd_searched))
         {
             let desc = cmd_found.description.as_deref().unwrap_or("No description");
-            let response = format!("**{}**\n{desc}", cmd_found.name);
+            let help_text = cmd_found.help_text.as_deref().unwrap_or("No help text");
+            let aliases = cmd_found.aliases.as_ref();
+            let response = format!(
+                "## **{}**\n-# *aliases: {}*\n\n{desc}\n{help_text}",
+                cmd_found.name,
+                aliases.join(", ")
+            );
             ctx.reply(response).await?;
         } else {
             ctx.reply("Command not found").await?;
         }
     } else {
-        let mut response = "Available commands:\n".to_string();
+        let mut response = "Available commands:\n\n```diff\n".to_string();
+        let mut util_category = "Utility:\n".to_string();
+        let mut uncat_category = "Uncategorized:\n".to_string();
+
         for cmd in commands {
-            response.push_str(format!("{}\n", cmd.name).as_str());
+            let category = cmd.category.as_deref().unwrap_or("Uncategorized");
+            if category == "Utility" {
+                util_category.push_str(format!("+ {}\n", cmd.name).as_str());
+            } else if category == "Uncategorized" {
+                uncat_category.push_str(format!("- {}\n", cmd.name).as_str());
+            }
         }
+        response.push_str(format!("{util_category}\n").as_str());
+        response.push_str(&uncat_category);
+
+        response.push_str("```");
         ctx.reply(response).await?;
     }
     Ok(())
