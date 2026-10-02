@@ -51,7 +51,8 @@ pub async fn evaluate(
         && !stdout.trim().is_empty()
     {
         if stdout.contains('`') {
-            response.push_str("Tried to break formatting. \n```Invalid character: \"`\" ```");
+            response
+                .push_str("Tried to break formatting. \n```diff\n- Invalid character: \"`\" ```");
         } else {
             response.push_str(format!("```\n{stdout}\n```").as_str());
         }
