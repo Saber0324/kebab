@@ -15,7 +15,7 @@ pub type Context<'a> = poise::Context<'a, Data, Error>;
 /// Takes a codeblock annotated with the language to evaluate, \
 /// and an optional second codeblock for stdin.
 ///
-/// Example:
+/// # Examples:
 /// !e \`\`\`py
 /// print(input("Say your name"))
 /// \`\`\`\
@@ -85,7 +85,7 @@ pub async fn help(
             let help_text = cmd_found.help_text.as_deref().unwrap_or("No help text");
             let aliases = cmd_found.aliases.as_ref();
             let response = format!(
-                "## **{}**\n-# *aliases: {}*\n\n{desc}\n{help_text}",
+                "# **{}**\n-# *aliases: {}*\n\n{desc}\n{help_text}",
                 cmd_found.name,
                 aliases.join(", ")
             );
