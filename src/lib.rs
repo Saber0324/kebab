@@ -50,7 +50,11 @@ pub async fn evaluate(
     if let Some(stdout) = result.stdout
         && !stdout.trim().is_empty()
     {
-        response.push_str(format!("```\n{stdout}\n```").as_str());
+        if stdout.contains('`') {
+            response.push_str("Tried to break formatting. \n```Invalid character: \"`\" ```");
+        } else {
+            response.push_str(format!("```\n{stdout}\n```").as_str());
+        }
     } else {
         response.push_str("```\nNo output\n```");
     }
