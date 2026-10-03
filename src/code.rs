@@ -93,25 +93,39 @@ impl Language {
     }
 }
 
+macro_rules! match_langs {
+    ($self:expr, $($($aliases:literal)|+ => $lang:ident),+ $(,)?) => {
+        {
+            $(
+                $(
+                    if $self.eq_ignore_ascii_case($aliases) {
+                        return Ok(Language::$lang);
+                    }
+                )*
+            )*
+            Err(EvalError::UnsupportedLanguage($self.to_string()))
+        }
+    };
+}
+
 impl FromStr for Language {
     type Err = EvalError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let s = &s.to_lowercase();
-        match s.as_str() {
-            "python" | "py" => Ok(Self::Python),
-            "rust" | "rs" => Ok(Self::Rust),
-            "golang" | "go" => Ok(Self::Go),
-            "brainfuck" | "bf" => Ok(Self::Brainfuck),
-            "c" => Ok(Self::C),
-            "cpp" => Ok(Self::Cpp),
-            "bash" | "sh" => Ok(Self::Bash),
-            "java" => Ok(Self::Java),
-            "lua" => Ok(Self::Lua),
-            "js" | "javascript" => Ok(Self::JavaScript),
-            "zig" => Ok(Self::Zig),
-            unsuported => Err(EvalError::UnsupportedLanguage(unsuported.to_string())),
-        }
+        match_langs!(
+            s,
+            "python" | "py" => Python,
+            "rust" | "rs" => Rust,
+            "golang" | "go" => Go,
+            "brainfuck" | "bf" => Brainfuck,
+            "c" => C,
+            "cpp" => Cpp,
+            "bash" | "sh" => Bash,
+            "java" => Java,
+            "lua" => Lua,
+            "js" | "javascript" => JavaScript,
+            "zig" => Zig,
+        )
     }
 }
 
