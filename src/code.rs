@@ -137,6 +137,6 @@ pub enum EvalError {
     ParseFailed,
     #[error("Failed to build regex")]
     BuildFailed(#[from] regex::Error),
-    #[error("Correct usage example: \n!e \'\'\'py\n\nprint('Hello, world!')")]
+    #[error("Correct usage example: \n!e \\`\\`\\`py\n\nprint('Hello, world!')\n\\`\\`\\`")]
     EmptyCodeBlock,
 }
